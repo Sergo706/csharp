@@ -5,6 +5,7 @@ using DocsParser.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using DocsParser.Services.Convertor;
+using DocsParser.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var loggers = new Loggers();
@@ -15,6 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddAntiforgery();
 builder.Services.AddValidation();
 builder.Services.AddAuthorization();
+builder.Services.AddAppRateLimiting();
 
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
@@ -34,8 +36,18 @@ builder.Services.AddAuthentication()
         options.ClientSecret = builder.Configuration["GitHub:ClientSecret"] ?? "a";
         options.CallbackPath = "/api/auth/callback/github";
         options.Scope.Add("user:email");
-        options.ClaimActions.MapJsonKey("avatar", "picture", "url");
+        options.ClaimActions.MapJsonKey("avatar", "avatar_url", "url");
     });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.Cookie.Path = "/";
+    options.SlidingExpiration = true;
+});
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(loggers.HttpLogger);
@@ -64,9 +76,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
-app.MapGroup("/api/auth").MapIdentityApi<AppUser>();
+app.MapGroup("/api/auth")
+    .MapIdentityApi<AppUser>()
+    .RequireRateLimiting(RateLimitPolicies.Auth);
 app.MapControllers();
-
 app.MigrateDb();
 app.Run();

@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using DocsParser.Extensions;
 
 namespace DocsParser.Controllers;
 
 [Route("api/auth")]
 [ApiController]
+[EnableRateLimiting(RateLimitPolicies.Auth)]
 
 public class OAuthRedirects(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager) : ControllerBase
 {

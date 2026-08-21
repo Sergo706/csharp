@@ -13,7 +13,7 @@ public class AppUser : IdentityUser
     [MaxLength(100)]
     public string? LastName { get; set; }
     public string? AvatarUrl { get; set; }
-    
+
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column(TypeName = "TIMESTAMP")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -30,11 +30,13 @@ public class Document
     public required string UserId { get; set; }
     [MaxLength(50)]
     public required string ConvertedTo { get; set; }
+    [MaxLength(50)]
+    public required string ConvertedFrom { get; set; }
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column(TypeName = "TIMESTAMP")]
-    public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     [Column(TypeName = "TIMESTAMP")]
-    public required DateTime UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public AppUser? User { get; set; }
 }
 

@@ -4,16 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using DocsParser.Models;
 using System.Text.RegularExpressions;
+using System.Security.Claims;
+using DocsParser.Services;
+using DocsParser.Extensions;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DocsParser.Controllers;
 
 [ApiController]
 [Route("api/documents")]
 [Consumes("multipart/form-data")]
-public class DocumentController(Convertor converter, IAppLogger appLogger) : ControllerBase
+public class DocumentController(Convertor converter, IAppLogger appLogger, DocumentService documentService) : ControllerBase
 {
     private readonly Convertor _converter = converter;
     private readonly IAppLogger _appLogger = appLogger;
+    private readonly DocumentService _documentService = documentService;
+    private string? UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
     private static string SanitizeFileName(string name, int maxBaseLength = 100)
     {
         var baseName = Path.GetFileNameWithoutExtension(name) ?? "file";
@@ -25,6 +32,7 @@ public class DocumentController(Convertor converter, IAppLogger appLogger) : Con
     }
 
     [HttpPost("convert")]
+    [EnableRateLimiting(RateLimitPolicies.Conversion)]
     public async Task<IActionResult> ConvertFile([FromForm] FileUploadDto dto)
     {
         if (dto.File.Length == 0)
@@ -75,6 +83,17 @@ public class DocumentController(Convertor converter, IAppLogger appLogger) : Con
                 detectedContentType = "application/octet-stream";
 
             string mimeType = detectedContentType;
+            if (!string.IsNullOrWhiteSpace(UserId))
+            {
+                    try
+                    {
+                        await _documentService.AddDocumentHistory(outFileName, UserId,  target, ext);
+                    }
+                    catch (Exception ex)
+                    {
+                      _appLogger.AppLogger.Error(ex, "failed to save history conversion for authenticated user");
+                    }
+            };
 
             return File(convertedBytes, mimeType, outFileName);
         }

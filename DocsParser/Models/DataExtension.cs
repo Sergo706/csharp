@@ -1,5 +1,6 @@
 
 
+using DocsParser.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocsParser.Models;
@@ -19,5 +20,7 @@ public static class DataExtension
         var serverVersion = ServerVersion.AutoDetect(connectionString);
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseMySql(connectionString, serverVersion));
+            
+        builder.Services.AddScoped<DocumentService>();
     }
 }
