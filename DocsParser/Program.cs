@@ -73,6 +73,7 @@ if (app.Environment.IsDevelopment())
         options.DocumentPath = "/openapi/v1.json";
     });
 }
+string dashboardUrl = builder.Configuration["Frontend:DashboardUrl"] ?? "http://localhost:3000/dashboard";
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -15,10 +15,15 @@ namespace DocsParser.Controllers;
 [ApiController]
 [EnableRateLimiting(RateLimitPolicies.Auth)]
 
-public class OAuthRedirects(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager) : ControllerBase
+public class OAuthRedirects(
+    SignInManager<AppUser> signInManager,
+    UserManager<AppUser> userManager,
+    IConfiguration configuration
+    ) : ControllerBase
 {
     private readonly SignInManager<AppUser> _signInManager = signInManager;
     private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly string _dashboardUrl = configuration["Frontend:DashboardUrl"] ?? "http://localhost:3000/dashboard";
 
     [HttpGet("login/{provider}")]
     public IResult StartFlow(string provider)
@@ -46,9 +51,10 @@ public class OAuthRedirects(SignInManager<AppUser> signInManager, UserManager<Ap
     {
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null) return Results.Unauthorized();
+   
 
         var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
-        if (result.Succeeded) return Results.Redirect("http://localhost:3000/dashboard");
+        if (result.Succeeded) return Results.Redirect(_dashboardUrl);
 
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
         if (string.IsNullOrEmpty(email))
@@ -76,6 +82,6 @@ public class OAuthRedirects(SignInManager<AppUser> signInManager, UserManager<Ap
 
         await _signInManager.SignInAsync(user, isPersistent: true);
 
-        return Results.Redirect("http://localhost:3000/dashboard");
+        return Results.Redirect(_dashboardUrl);
     }
 }
