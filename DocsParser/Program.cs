@@ -1,13 +1,22 @@
-using Serilog;
-using Microsoft.AspNetCore.HttpLogging;
-using DocsParser.Services.Loggers;
-using DocsParser.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication;
-using DocsParser.Services.Convertor;
 using DocsParser.Extensions;
+using DocsParser.Models;
+using DocsParser.Services.Convertor;
+using DocsParser.Services.Loggers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor
+    | ForwardedHeaders.XForwardedProto
+    | ForwardedHeaders.XForwardedHost;
+    options.KnownProxies.Add(System.Net.IPAddress.Loopback);
+    options.KnownProxies.Add(System.Net.IPAddress.IPv6Loopback);
+});
 var loggers = new Loggers();
 builder.Services.AddSingleton<IAppLogger>(loggers);
 builder.Services.AddScoped<Convertor>();
@@ -37,12 +46,15 @@ builder.Services.AddAuthentication()
         options.CallbackPath = "/api/auth/callback/github";
         options.Scope.Add("user:email");
         options.ClaimActions.MapJsonKey("avatar", "avatar_url", "url");
-    });
+    }
+    );
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+    ? CookieSecurePolicy.SameAsRequest
+    : CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.Cookie.Path = "/";
@@ -63,19 +75,15 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.AddDataBase();
 var app = builder.Build();
+app.UseForwardedHeaders();
 app.UseHttpLogging();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUi(options =>
-    {
-        options.DocumentPath = "/openapi/v1.json";
-    });
+    app.UseSwaggerUi(options => options.DocumentPath = "/openapi/v1.json");
 }
 string dashboardUrl = builder.Configuration["Frontend:DashboardUrl"] ?? "http://localhost:3000/dashboard";
-
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();

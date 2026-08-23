@@ -1,13 +1,13 @@
+using System.Security.Claims;
+using System.Text.RegularExpressions;
+using DocsParser.Extensions;
+using DocsParser.Models;
+using DocsParser.Services;
 using DocsParser.Services.Convertor;
 using DocsParser.Services.Loggers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
-using DocsParser.Models;
-using System.Text.RegularExpressions;
-using System.Security.Claims;
-using DocsParser.Services;
-using DocsParser.Extensions;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace DocsParser.Controllers;
 
@@ -19,14 +19,16 @@ public class DocumentController(Convertor converter, IAppLogger appLogger, Docum
     private readonly Convertor _converter = converter;
     private readonly IAppLogger _appLogger = appLogger;
     private readonly DocumentService _documentService = documentService;
+    private static readonly Regex _regex = new Regex(@"[^\w\-\.]");
+
     private string? UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     private static string SanitizeFileName(string name, int maxBaseLength = 100)
     {
         var baseName = Path.GetFileNameWithoutExtension(name) ?? "file";
-        baseName = Regex.Replace(baseName, @"[^\w\-\.]", "_"); 
-        
-        if (baseName.Length > maxBaseLength) baseName = baseName.Substring(0, maxBaseLength);
+        baseName = _regex.Replace(baseName, "_");
+
+        if (baseName.Length > maxBaseLength) baseName = baseName[..maxBaseLength];
         var ext = Path.GetExtension(name).TrimStart('.');
         return $"{baseName}.{ext}";
     }
@@ -85,15 +87,16 @@ public class DocumentController(Convertor converter, IAppLogger appLogger, Docum
             string mimeType = detectedContentType;
             if (!string.IsNullOrWhiteSpace(UserId))
             {
-                    try
-                    {
-                        await _documentService.AddDocumentHistory(outFileName, UserId,  target, ext);
-                    }
-                    catch (Exception ex)
-                    {
-                      _appLogger.AppLogger.Error(ex, "failed to save history conversion for authenticated user");
-                    }
-            };
+                try
+                {
+                    await _documentService.AddDocumentHistory(outFileName, UserId, target, ext);
+                }
+                catch (Exception ex)
+                {
+                    _appLogger.AppLogger.Error(ex, "failed to save history conversion for authenticated user");
+                }
+            }
+            ;
 
             return File(convertedBytes, mimeType, outFileName);
         }
@@ -103,4 +106,4 @@ public class DocumentController(Convertor converter, IAppLogger appLogger, Docum
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while converting the file.");
         }
     }
-} 
+}

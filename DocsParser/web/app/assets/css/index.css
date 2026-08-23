@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@source "../../../content/**/*.yml";
+
+@media screen and (width < 1024px) {
+
+  :root,
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+}
+
+@utility absolute-center {
+    position: absolute;
+    transform: translate(-50%, 50%);
+    top: 50%;
+    left: 50%;
+}
+
+[class*="[counter-reset:step]"] h2::before,
+[class*="[counter-reset:step]"] h3::before,
+[class*="[counter-reset:step]"] h4::before {
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--ui-text-highlighted, inherit);
+}
+
+.dark [class*="[counter-reset:step]"] h2::before,
+.dark [class*="[counter-reset:step]"] h3::before,
+.dark [class*="[counter-reset:step]"] h4::before {
+    color: white !important;
+}
+
+@theme {
+    --font-sans: 'DM Sans', sans-serif;
+}
+
+:root {
+    --ui-radius: 0.375rem;
+}

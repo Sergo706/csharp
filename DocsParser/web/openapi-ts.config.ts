@@ -14,8 +14,6 @@ export default defineConfig({
 
     {
       name: 'zod',
-
-      // Generate z.infer<...> TypeScript types too
       types: {
         infer: true,
       },
@@ -23,8 +21,6 @@ export default defineConfig({
 
     {
       name: '@hey-api/sdk',
-
-      // Use Zod at runtime
       validator: true,
       transformer: true,
     },
