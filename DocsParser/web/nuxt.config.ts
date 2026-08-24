@@ -20,7 +20,8 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/': { prerender: true, cache: { maxAge: 60 * 60 * 24 * 30 } },
-    '/account': { prerender: false, ssr: false },
+    '/dashboard/**': { prerender: false, ssr: false },
+    '/confirm-email/**': { prerender: false },
     '/api/**': {
       prerender: false,
       proxy: {

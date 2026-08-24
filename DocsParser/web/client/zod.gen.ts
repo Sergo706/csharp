@@ -268,6 +268,17 @@ export type PostApiDocumentsConvertBodyZodType = z.infer<
   typeof zPostApiDocumentsConvertBody
 >;
 
+export const zPostApiCustomAuthControllerAuthRegisterCustomBody = z.object({
+  Email: z.string().max(200).optional(),
+  Password: z.string().optional(),
+  Name: z.string().max(100).optional(),
+  LastName: z.string().max(100).optional(),
+});
+
+export type PostApiCustomAuthControllerAuthRegisterCustomBodyZodType = z.infer<
+  typeof zPostApiCustomAuthControllerAuthRegisterCustomBody
+>;
+
 export const zGetApiAuthLoginByProviderPath = z.object({
   provider: z.string(),
 });

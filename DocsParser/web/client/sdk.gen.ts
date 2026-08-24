@@ -10,6 +10,7 @@ import {
   type Options as Options2,
   type RequestResult,
   type TDataShape,
+  urlSearchParamsBodySerializer,
 } from "./client";
 import { client } from "./client.gen";
 import type {
@@ -18,6 +19,7 @@ import type {
   GetApiAuthManageInfoData,
   GetApiAuthManageInfoError,
   GetApiAuthManageInfoResponse,
+  GetApiCustomAuthControllerAuthProfileData,
   GetApiHistoryData,
   MapIdentityApiApiAuthConfirmEmailData,
   PostApiAuthForgotPasswordData,
@@ -37,6 +39,7 @@ import type {
   PostApiAuthResendConfirmationEmailData,
   PostApiAuthResetPasswordData,
   PostApiAuthResetPasswordError,
+  PostApiCustomAuthControllerAuthRegisterCustomData,
   PostApiDocumentsConvertData,
 } from "./types.gen";
 import {
@@ -57,6 +60,7 @@ import {
   zPostApiAuthRegisterBody,
   zPostApiAuthResendConfirmationEmailBody,
   zPostApiAuthResetPasswordBody,
+  zPostApiCustomAuthControllerAuthRegisterCustomBody,
   zPostApiDocumentsConvertBody,
 } from "./zod.gen";
 
@@ -450,6 +454,69 @@ export const postApiDocumentsConvert = <
       "Content-Type": null,
       ...options.headers,
     },
+  });
+
+export const postApiCustomAuthControllerAuthRegisterCustom = <
+  TComposable extends Composable = "$fetch",
+  DefaultT = undefined,
+>(
+  options: Options<
+    TComposable,
+    PostApiCustomAuthControllerAuthRegisterCustomData,
+    unknown,
+    DefaultT
+  >,
+): RequestResult<TComposable, unknown | DefaultT, DefaultT> =>
+  (options.client ?? client).post<
+    TComposable,
+    unknown | DefaultT,
+    unknown,
+    DefaultT
+  >({
+    ...urlSearchParamsBodySerializer,
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: zPostApiCustomAuthControllerAuthRegisterCustomBody,
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/CustomAuthController/auth/register-custom",
+    ...options,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      ...options.headers,
+    },
+  });
+
+export const getApiCustomAuthControllerAuthProfile = <
+  TComposable extends Composable = "$fetch",
+  DefaultT = undefined,
+>(
+  options: Options<
+    TComposable,
+    GetApiCustomAuthControllerAuthProfileData,
+    unknown,
+    DefaultT
+  >,
+): RequestResult<TComposable, unknown | DefaultT, DefaultT> =>
+  (options.client ?? client).get<
+    TComposable,
+    unknown | DefaultT,
+    unknown,
+    DefaultT
+  >({
+    requestValidator: async (data) =>
+      await z
+        .object({
+          body: z.never().optional(),
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    url: "/api/CustomAuthController/auth/profile",
+    ...options,
   });
 
 export const getApiAuthLoginByProvider = <

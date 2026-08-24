@@ -332,6 +332,39 @@ export type PostApiDocumentsConvertResponses = {
   200: unknown;
 };
 
+export type PostApiCustomAuthControllerAuthRegisterCustomData = {
+  body: {
+    Email?: string;
+    Password?: string;
+    Name?: string;
+    LastName?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/CustomAuthController/auth/register-custom";
+};
+
+export type PostApiCustomAuthControllerAuthRegisterCustomResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
+export type GetApiCustomAuthControllerAuthProfileData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/CustomAuthController/auth/profile";
+};
+
+export type GetApiCustomAuthControllerAuthProfileResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
 export type GetApiAuthLoginByProviderData = {
   body?: never;
   path: {

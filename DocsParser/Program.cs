@@ -1,11 +1,13 @@
 using DocsParser.Extensions;
 using DocsParser.Models;
+using DocsParser.Services;
 using DocsParser.Services.Convertor;
 using DocsParser.Services.Loggers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Resend;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,9 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var loggers = new Loggers();
 builder.Services.AddSingleton<IAppLogger>(loggers);
 builder.Services.AddScoped<Convertor>();
+builder.Services.AddScoped<AccountsService>();
+builder.Services.AddResend(options => options.ApiToken = builder.Configuration["Resend:ApiKey"]!);
+builder.Services.AddTransient<IEmailSender<AppUser>, ResendEmailSenderService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddAntiforgery();
@@ -27,7 +32,9 @@ builder.Services.AddValidation();
 builder.Services.AddAuthorization();
 builder.Services.AddAppRateLimiting();
 
-builder.Services.AddIdentityApiEndpoints<AppUser>()
+builder.Services.AddIdentityApiEndpoints<AppUser>(options =>
+options.SignIn.RequireConfirmedAccount = true
+)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 

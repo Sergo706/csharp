@@ -4,6 +4,7 @@ export {
   getApiAuthByProviderSuccess,
   getApiAuthLoginByProvider,
   getApiAuthManageInfo,
+  getApiCustomAuthControllerAuthProfile,
   getApiHistory,
   mapIdentityApiApiAuthConfirmEmail,
   type Options,
@@ -15,6 +16,7 @@ export {
   postApiAuthRegister,
   postApiAuthResendConfirmationEmail,
   postApiAuthResetPassword,
+  postApiCustomAuthControllerAuthRegisterCustom,
   postApiDocumentsConvert,
 } from "./sdk.gen";
 export type {
@@ -30,6 +32,8 @@ export type {
   GetApiAuthManageInfoErrors,
   GetApiAuthManageInfoResponse,
   GetApiAuthManageInfoResponses,
+  GetApiCustomAuthControllerAuthProfileData,
+  GetApiCustomAuthControllerAuthProfileResponses,
   GetApiHistoryData,
   GetApiHistoryResponses,
   HttpValidationProblemDetails,
@@ -69,6 +73,8 @@ export type {
   PostApiAuthResetPasswordError,
   PostApiAuthResetPasswordErrors,
   PostApiAuthResetPasswordResponses,
+  PostApiCustomAuthControllerAuthRegisterCustomData,
+  PostApiCustomAuthControllerAuthRegisterCustomResponses,
   PostApiDocumentsConvertData,
   PostApiDocumentsConvertResponses,
   RefreshRequest,
