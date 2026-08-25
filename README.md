@@ -24,7 +24,7 @@ DocsParser is a document conversion website built as a small, self-contained
 service. Its Nuxt/Vue frontend proxies requests to an ASP.NET Core backend,
 which uses LibreOffice and other conversion tools.
 
-It supports the following conversions:
+The API currently accepts the following conversion paths:
 
 | Source \ Target | PDF | DOCX | Markdown | HTML | PPTX | JPG |
 | --------------- | :-: | :--: | :------: | :--: | :--: | :-: |
@@ -46,7 +46,7 @@ The backend uses EF Core, ASP.NET Core Identity, and MySQL for account
 management and per-user conversion history. It also includes Google and GitHub authentication, email confirmation, and rate limiting.
 
 The application will be packaged with Docker and self-hosted behind Caddy and a
-Cloudflare Tunnel, on a vm.
+Cloudflare Tunnel, on a ubuntu vm.
 
 Currently in the following stage:
 - Frontend still doesn't wired fully
