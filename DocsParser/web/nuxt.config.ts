@@ -4,7 +4,6 @@ export default defineNuxtConfig({
     '@nuxt/hints',
     '@nuxt/image',
     '@nuxt/ui',
-    '@nuxtjs/i18n',
     '@nuxtjs/seo',
     'nuxt-feedme',
     '@nuxt/fonts',
@@ -60,7 +59,7 @@ export default defineNuxtConfig({
     provider: 'iconify',
   },
   css: [
-    './app/assets/css/index.css'
+    '~/assets/css/index.css'
   ],
   site: {
     url: 'https://convertor.riavzon.com',
@@ -68,6 +67,148 @@ export default defineNuxtConfig({
     description: 'Convert PDF files CSV, MD files and more to any formats',
     indexable: true,
     defaultLocale: 'en',
+  },
+  llms: {
+    domain: 'https://convertor.riavzon.com',
+    title: 'Document Convertor',
+    description: 'A browser-based document conversion platform supporting 22 explicitly allowlisted conversions across PDF, Markdown, office, spreadsheet, image, and HTML formats.',
+    sections: [
+      {
+        title: 'Platform Overview',
+        description: 'Convert documents directly in your browser and download the result immediately. Conversion is available without an account; signed-in users can also keep a history containing the output filename, source format, target format, and conversion timestamps.'
+      },
+      {
+        title: 'Complete Conversion Matrix',
+        description: `The server supports the following 22 directed conversion paths. A checkmark means that the input in that row can be converted to the output in that column.
+
+| Input / output | PDF | Markdown (MD) | DOCX | JPG | PPTX | HTML |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| PDF | — | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Markdown (MD) | ✓ | — | ✓ | — | — | ✓ |
+| DOCX | ✓ | ✓ | — | — | — | — |
+| CSV | ✓ | ✓ | — | — | — | — |
+| XLS | ✓ | ✓ | — | — | — | — |
+| XLSX | ✓ | ✓ | — | — | — | — |
+| ODS | ✓ | — | — | — | — | — |
+| JPG | ✓ | — | — | — | — | — |
+| PPTX | ✓ | ✓ | — | — | — | — |
+| HTML | ✓ | ✓ | — | — | — | — |`
+      },
+      {
+        title: 'Upload, Convert & Download',
+        description: 'Upload your file through the web interface, select your target format, and convert. Files may be up to 10 MB. Once the conversion is complete, the file is returned as a download with a sanitized, timestamped filename.',
+        links: [
+          {
+            title: 'Document Convertor',
+            description: 'Open the browser-based document conversion experience.',
+            href: 'https://convertor.riavzon.com/'
+          }
+        ]
+      },
+      {
+        title: 'Format-Aware Conversion Engines',
+        description: 'Document Convertor routes each supported pair through a purpose-built pipeline. LibreOffice handles office, spreadsheet, image, PDF, and Markdown conversions; MarkItDown produces Markdown from PDF, DOCX, CSV, XLS, XLSX, PPTX, and HTML; and pdf2htmlEX produces self-contained HTML from PDF with embedded styling, fonts, images, JavaScript, and outlines. PDF-to-Markdown first creates an intermediate DOCX before Markdown extraction.'
+      },
+      {
+        title: 'Accounts & Conversion History',
+        description: 'Accounts are optional for conversion. The platform supports local registration with confirmed email, sign-in through Google or GitHub, profile and account management, password recovery, refresh tokens, and two-factor authentication. When a signed-in user converts a document, the platform records conversion metadata that is available from the authenticated /api/history endpoint. for authenticated users'
+      },
+      {
+        title: 'Validation, Isolation & Service Limits',
+        description: 'The server rejects empty files, unsupported extensions, unsupported source/target pairs, and MIME families that conflict with a recognized filename extension. Every job runs in a unique temporary work directory, conversion processes use timeouts, and temporary files are removed after the request. Limits are 5 conversion requests per minute, 10 authentication requests per minute, and 50 total requests per minute, partitioned by authenticated user or client IP.'
+      },
+      {
+        title: 'Privacy and File storage',
+        description: 'The Server doesnt store any files the user provides, it does the work, and delete it completely when done, to insure maximum privacy for user sensitive documents, the only thing that stored are the action and metadata about a file for authenticated users. Accounts arent required.'
+      },
+      {
+        title: 'Service Definition',
+        description: 'This is not a paid service and completely free to use in the allowed limits, and rather act as a utility website'
+      },
+      {
+        title: 'Content',
+        description: 'Pages and guides published through the Document Convertor Nuxt Content collection. Each listed page has a raw Markdown representation for LLMs and is included in the consolidated /llms-full.txt export.',
+        contentCollection: 'content'
+      },
+      {
+        title: 'Blog',
+        description: 'Document conversion articles, platform updates, tutorials, and feeds.',
+        links: [
+          {
+            title: 'Document Convertor Blog',
+            description: 'Read articles, tutorials, and platform updates.',
+            href: 'https://convertor.riavzon.com/blog'
+          },
+          {
+            title: 'RSS Feed',
+            description: 'Follow the Document Convertor blog in RSS format.',
+            href: 'https://convertor.riavzon.com/feed.xml'
+          },
+          {
+            title: 'Atom Feed',
+            description: 'Follow the Document Convertor blog in Atom format.',
+            href: 'https://convertor.riavzon.com/feed.atom'
+          },
+          {
+            title: 'JSON Feed',
+            description: 'Consume the Document Convertor blog in JSON Feed format.',
+            href: 'https://convertor.riavzon.com/feed.json'
+          },
+          {
+            title: 'Author’s Blog',
+            description: 'Read announcements, technical articles, and project updates from the author.',
+            href: 'https://riavzon.com/writing'
+          }
+        ]
+      },
+      {
+        title: 'More From the Author',
+        description: 'Document Convertor is part of the Riavzon ecosystem. Explore the author’s main site and other applications.',
+        links: [
+          {
+            title: 'Riavzon',
+            description: 'The author’s main hub and the home of the wider Riavzon ecosystem.',
+            href: 'https://riavzon.com'
+          },
+          {
+            title: 'Solana Bots',
+            description: 'A desktop application and CLI for managing multiple wallets, executing mass token swaps, and running volume bots while keeping keys and data on the user’s device.',
+            href: 'https://solana.riavzon.com/'
+          },
+          {
+            title: 'IP Shield',
+            description: 'An IP intelligence and threat-detection API and dashboard with geolocation, ISP and ASN data, VPN, proxy, and Tor signals, threat levels, bot detection, API-key management, and usage analytics.',
+            href: 'https://ip-shield.riavzon.com/'
+          }
+        ]
+      },
+      {
+        title: 'Fast Navigation for LLMs',
+        description: 'For a specific page, use its raw Markdown link in the Content section instead of downloading the complete export. Use /llms-full.txt only when consolidated context from every content page is required.',
+        links: [
+          {
+            title: 'Home Page Raw Markdown',
+            description: 'Raw Markdown for the Document Convertor home page. Human-readable page: https://convertor.riavzon.com/',
+            href: 'https://convertor.riavzon.com/raw/index.md'
+          },
+          {
+            title: 'About Page Raw Markdown',
+            description: 'Raw Markdown for the Document Convertor about page. Human-readable page: https://convertor.riavzon.com/about',
+            href: 'https://convertor.riavzon.com/raw/about.md'
+          }
+        ]
+      }
+    ],
+    notes: [
+      'The conversion matrix above is the server-enforced allowlist: formats cannot be combined arbitrarily.',
+      'The maximum upload size is 10 MB, and conversion requests are limited to 5 per minute per authenticated user or client IP.',
+      'The platform accepts anonymous conversions; authentication is required only for account-specific features such as conversion history.',
+      'For announcements, tutorials, and technical articles, visit https://convertor.riavzon.com/blog or the author’s writing at https://riavzon.com/writing.'
+    ],
+    full: {
+      title: 'Document Convertor Full Content',
+      description: 'Consolidated machine-readable content from every page in the Document Convertor content collection.'
+    }
   },
   app: {
     head: {
