@@ -32,7 +32,7 @@
     "@tiptap/vue-3": "3.30.2",
     "@vueuse/nuxt": "14.2.1",
     "better-sqlite3": "12.9.0",
-    "nuxt": "4.5.2",
+    "nuxt": "4.6.3",
     "vue": "3.5.41",
     "vue-router": "5.2.0",
     "zod": "^4.4.3"
